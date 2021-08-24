@@ -8,10 +8,10 @@ import (
 	"strings"
 )
 
-func RegisterWebhookAppUninstallShopUpdate(Env, apiUrl string, request *http.Request, shopDomain string, appCode string, accessToken string, topics []string) {
+func RegisterWebhookAppUninstallShopUpdate(Env, SHOPIFY_API_VERSION, apiUrl string, request *http.Request, shopDomain string, appCode string, accessToken string, topics []string) {
 	aCode := strings.Split(appCode, "-")[0]
 	header := map[string]string{"Content-Type": "application/json", "X-Shopify-Access-Token": accessToken}
-	webHookUrl := "https://" + shopDomain + "/admin/webhooks.json"
+	webHookUrl := "https://" + shopDomain + "/admin" + SHOPIFY_API_VERSION + "/webhooks.json"
 	var _RegisterWebhook ShopRegisterWebhook
 	_RegisterWebhook.Webhook.Format = "json"
 	topics = append(topics, "app/uninstalled")
@@ -24,10 +24,10 @@ func RegisterWebhookAppUninstallShopUpdate(Env, apiUrl string, request *http.Req
 	}
 }
 
-func RegisterWebhookByEvents(Env, apiUrl string, request *http.Request, shopDomain string, appCode string, accessToken string, events []string) {
+func RegisterWebhookByEvents(Env, SHOPIFY_API_VERSION, apiUrl string, request *http.Request, shopDomain string, appCode string, accessToken string, events []string) {
 	aCode := strings.Split(appCode, "-")[0]
 	header := map[string]string{"Content-Type": "application/json", "X-Shopify-Access-Token": accessToken}
-	webHookUrl := "https://" + shopDomain + "/admin/webhooks.json"
+	webHookUrl := "https://" + shopDomain + "/admin" + SHOPIFY_API_VERSION + "/webhooks.json"
 	var _RegisterWebhook ShopRegisterWebhook
 	_RegisterWebhook.Webhook.Format = "json"
 	var topics []string
@@ -42,8 +42,8 @@ func RegisterWebhookByEvents(Env, apiUrl string, request *http.Request, shopDoma
 	}
 }
 
-func ShopifyEventWebhookDelete(Env string, request *http.Request, accessToken, shopDomain, event string) {
-	webHookUrl := "https://" + shopDomain + "/admin/webhooks.json"
+func ShopifyEventWebhookDelete(Env, SHOPIFY_API_VERSION string, request *http.Request, accessToken, shopDomain, event string) {
+	webHookUrl := "https://" + shopDomain + "/admin" + SHOPIFY_API_VERSION + "/webhooks.json"
 	urlGetTopic := webHookUrl + "?topic=" + event
 	header := map[string]string{"Content-Type": "application/json", "X-Shopify-Access-Token": accessToken}
 	stt, d1, err, _ := go_gcloud_engine.RequestCustomer(Env, "GET", urlGetTopic, nil, header, request)
@@ -58,7 +58,7 @@ func ShopifyEventWebhookDelete(Env string, request *http.Request, accessToken, s
 		for _, webhook := range w1.Webhooks {
 			if webhook.Topic == event && webhook.Id > 0 {
 				webhookId := fmt.Sprint(webhook.Id)
-				deleteWebHookUrl := "https://" + shopDomain + "/admin/webhooks/" + webhookId + ".json"
+				deleteWebHookUrl := "https://" + shopDomain + "/admin" + SHOPIFY_API_VERSION + "/webhooks/" + webhookId + ".json"
 				_, _, _, _ = go_gcloud_engine.RequestCustomer(Env, "DELETE", deleteWebHookUrl, nil, header, request)
 			}
 		}

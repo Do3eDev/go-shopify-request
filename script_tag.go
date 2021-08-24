@@ -7,9 +7,9 @@ import (
 	"strconv"
 )
 
-func DeleteAllScriptTag(Env string, scripts ScriptTags, accessToken string, domain string, r *http.Request) (stt int) {
+func DeleteAllScriptTag(Env, SHOPIFY_API_VERSION string, scripts ScriptTags, accessToken string, domain string, r *http.Request) (stt int) {
 	for j := 0; j < len(scripts.ScriptTags); j++ {
-		urlDelete := "https://" + domain + "/admin/script_tags/" + strconv.FormatInt(scripts.ScriptTags[j].Id, 10) + ".json"
+		urlDelete := "https://" + domain + "/admin" + SHOPIFY_API_VERSION + "/script_tags/" + strconv.FormatInt(scripts.ScriptTags[j].Id, 10) + ".json"
 		stt1 := DeleteScriptTag(Env, urlDelete, accessToken, r)
 		if stt != 200 {
 			stt = stt1
@@ -18,8 +18,8 @@ func DeleteAllScriptTag(Env string, scripts ScriptTags, accessToken string, doma
 	return
 }
 
-func AddScriptTag(Env string, jsonStr []byte, domain string, accessToken string, r *http.Request) (status int, responseBody []byte, err error, Header map[string][]string) {
-	scriptUrl := "https://" + domain + "/admin/script_tags.json"
+func AddScriptTag(Env, SHOPIFY_API_VERSION string, jsonStr []byte, domain string, accessToken string, r *http.Request) (status int, responseBody []byte, err error, Header map[string][]string) {
+	scriptUrl := "https://" + domain + "/admin" + SHOPIFY_API_VERSION + "/script_tags.json"
 	hder := map[string]string{"Content-Type": "application/json", "X-Shopify-Access-Token": accessToken, "Content-Length": strconv.Itoa(len(jsonStr))}
 	return go_gcloud_engine.RequestCustomer(Env, "POST", scriptUrl, jsonStr, hder, r)
 }
@@ -30,8 +30,8 @@ func DeleteScriptTag(Env string, urlDelete string, accessToken string, r *http.R
 	return
 }
 
-func ListAllScriptTag(Env string, domain string, accessToken string, r *http.Request) (stt int, rs ScriptTags, err error) {
-	scriptUrl := "https://" + domain + "/admin/script_tags.json"
+func ListAllScriptTag(Env, SHOPIFY_API_VERSION string, domain string, accessToken string, r *http.Request) (stt int, rs ScriptTags, err error) {
+	scriptUrl := "https://" + domain + "/admin" + SHOPIFY_API_VERSION + "/script_tags.json"
 	hder := map[string]string{"Content-Type": "application/json", "X-Shopify-Access-Token": accessToken}
 	status, responseBody, err, _ := go_gcloud_engine.RequestCustomer(Env, "GET", scriptUrl, nil, hder, r)
 	var scripts ScriptTags
